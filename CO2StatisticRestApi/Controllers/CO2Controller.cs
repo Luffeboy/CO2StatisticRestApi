@@ -1,7 +1,6 @@
-﻿using CO2StatisticRestApi.Models;
-using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using Microsoft.AspNetCore.Mvc;
+using CO2StatisticRestApi;
+using CO2StatisticRestApi.Models;
 
 namespace CO2StatisticRestApi.Controllers
 {
@@ -9,17 +8,56 @@ namespace CO2StatisticRestApi.Controllers
     [ApiController]
     public class CO2Controller : ControllerBase
     {
-        // GET api/<ValuesController>/5
+        // Dummy data - skal erstattes af en database
+        private static List<Measurement> _measurements = new List<Measurement>
+        {
+            new Measurement { Id = 1, SensorId = 1, Time = new DateTime(2024, 4, 5), Value = 400 },
+            new Measurement { Id = 2, SensorId = 1, Time = new DateTime(2024, 6, 10), Value = 420 },
+            new Measurement { Id = 3, SensorId = 1, Time = new DateTime(2024, 8, 15), Value = 430 },
+            new Measurement { Id = 4, SensorId = 2, Time = new DateTime(2024, 5, 20), Value = 450 }
+        };
+        
+        // GET api/<CO2Controller>/5?startTime=2024-04-01&endTime=2024-08-01
+        //laver en get metode, som tager en id som parameter, og to nullable DateTime parametre, startTime og endTime.
         [HttpGet("{id}")]
         public IEnumerable<Measurement> Get(int id, [FromQuery] DateTime? startTime = null, [FromQuery] DateTime? endTime = null)
         {
-            return null;
+            // Filtrér målinger baseret på SensorId
+            var measurements = _measurements.Where(m => m.SensorId == id);
+
+            // Filtrér efter startTime, hvis det er angivet
+            if (startTime.HasValue)
+            {
+                measurements = measurements.Where(m => m.Time >= startTime.Value);
+            }
+
+            // Filtrér efter endTime, hvis det er angivet
+            if (endTime.HasValue)
+            {
+                measurements = measurements.Where(m => m.Time <= endTime.Value);
+            }
+            
+            return measurements;
         }
 
-        // POST api/<ValuesController>
+        // POST api/<CO2Controller>
+        //Laver en post metode, som tager en Measurement som parameter.
         [HttpPost]
-        public void Post([FromBody] string value, [FromBody] Models.Measurement measurement)
+        public IActionResult Post([FromBody] Measurement measurement)
         {
+            // Hvis der ikke er nogen måling, returneres en BadRequest
+            if (measurement == null)
+            {
+                return BadRequest("Need Measurement.");
+            }
+
+            // Midlertidig løsning til vi laver en database, den laver en Id til measurement
+            // og tilføjer measurement til _measurements listen.
+            measurement.Id = _measurements.Max(m => m.Id) + 1; // Autogenerer et nyt ID
+            _measurements.Add(measurement);
+            // Returnerer en CreatedAtAction, som returnerer en 201 Created statuskode og en location header.
+            return CreatedAtAction(nameof(Get), new { id = measurement.SensorId }, measurement);
         }
     }
 }
+
