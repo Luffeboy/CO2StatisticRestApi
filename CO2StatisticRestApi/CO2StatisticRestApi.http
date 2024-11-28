@@ -1,0 +1,6 @@
+@CO2StatisticRestApi_HostAddress = http://localhost:5120
+
+GET {{CO2StatisticRestApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
