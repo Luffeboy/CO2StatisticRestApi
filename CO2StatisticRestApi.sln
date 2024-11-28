@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO2StatisticRestApi", "CO2StatisticRestApi\CO2StatisticRestApi.csproj", "{5C148B40-0DB3-4592-B47B-ADAC1EF55031}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO2StatisticRestApiTests", "CO2StatisticRestApiTests\CO2StatisticRestApiTests.csproj", "{DDEB1D92-FBF4-4EB1-ABB5-01802C5302B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{5C148B40-0DB3-4592-B47B-ADAC1EF55031}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C148B40-0DB3-4592-B47B-ADAC1EF55031}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C148B40-0DB3-4592-B47B-ADAC1EF55031}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDEB1D92-FBF4-4EB1-ABB5-01802C5302B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDEB1D92-FBF4-4EB1-ABB5-01802C5302B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDEB1D92-FBF4-4EB1-ABB5-01802C5302B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDEB1D92-FBF4-4EB1-ABB5-01802C5302B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
