@@ -16,6 +16,7 @@ namespace CO2StatisticRestApi.Controllers.Tests
         [TestMethod()]
         public void GetByIdTest()
         {
+
             _controller = new CO2Controller();
 
             Assert.IsTrue(_controller.Get(1).Count() > 0);
