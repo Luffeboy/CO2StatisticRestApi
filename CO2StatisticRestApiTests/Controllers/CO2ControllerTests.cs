@@ -11,17 +11,37 @@ namespace CO2StatisticRestApi.Controllers.Tests
     [TestClass()]
     public class CO2ControllerTests
     {
+        CO2Controller _controller;
 
         [TestMethod()]
         public void GetByIdTest()
         {
+            _controller = new CO2Controller();
 
+            Assert.IsTrue(_controller.Get(1).Count() > 0);
+
+            var startTime = new DateTime(2024, 4, 4);
+            var endTime = new DateTime(2025, 1, 1);
+            var data = _controller.Get(1, startTime, endTime);
+
+            foreach(var d in data)
+            {
+                Assert.IsTrue(d.Time >= startTime);
+
+            }
+
+            data = _controller.Get(1, endTime: endTime);
+            foreach (var d in data)
+            {
+                Assert.IsTrue(d.Time <= endTime);
+            }
+
+            data = _controller.Get(1, startTime, endTime);
+            foreach (var d in data)
+            {
+                Assert.IsTrue(d.Time <= endTime && d.Time >= startTime);
+            }
         }
 
-        [TestMethod()]
-        public void PostTest()
-        {
-            Assert.Fail();
-        }
     }
 }

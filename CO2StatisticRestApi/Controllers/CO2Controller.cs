@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CO2StatisticRestApi.Models;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,9 +11,9 @@ namespace CO2StatisticRestApi.Controllers
     {
         // GET api/<ValuesController>/5
         [HttpGet("{id}")]
-        public string Get(int id, [FromQuery] DateTime? startTime, [FromQuery] DateTime? endTime)
+        public IEnumerable<Measurement> Get(int id, [FromQuery] DateTime? startTime = null, [FromQuery] DateTime? endTime = null)
         {
-            return "value";
+            return null;
         }
 
         // POST api/<ValuesController>
