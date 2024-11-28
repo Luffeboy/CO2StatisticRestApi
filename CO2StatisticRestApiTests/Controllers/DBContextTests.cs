@@ -2,122 +2,113 @@ using CO2StatisticRestApi;
 using System.Net.Sockets;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Moq;
+using CO2StatisticRestApi.Models;
+
 namespace CO2StatisticRestApiTests;
 
 [TestClass]
 public class DBContextTests
 {
- //   [TestMethod]
- //   public void validatedatatest()
- //   {
- //       // arrange
- //       data invaliddata1 = new data(1, null);
- //       data invaliddata2 = new data(1, "");
- //       data validdata = new data(2, 500);
+	//   [TestMethod]
+	//   public void validatedatatest()
+	//   {
+	//       // arrange
+	//       data invaliddata1 = new data(1, null);
+	//       data invaliddata2 = new data(1, "");
+	//       data validdata = new data(2, 500);
 
- //       // act
- //       bool isvalid1 = validatedata(invaliddata1);
- //       bool isvalid2 = validatedata(invaliddata2);
+	//       // act
+	//       bool isvalid1 = validatedata(invaliddata1);
+	//       bool isvalid2 = validatedata(invaliddata2);
 	//	bool isvalid2 = validatedata(validdata);
 
- //       // assert
- //       assert.isfalse(isvalid1, "co2-level cannot be null.");
+	//       // assert
+	//       assert.isfalse(isvalid1, "co2-level cannot be null.");
 	//	assert.isinstanceoftype(invaliddata2, typeof(int), "return value is not an int.");
 	//	assert.istrue(isvalid2, "co2-level is ");
 
 
 	//}
 
-	[TestMethod]
-    public void GetDataTest() { }
-
-	// Dataobjekt til at repræsentere CO2-data
-	public class CO2Data
+	// Simuleret interface for database (til test og controller afhængighed)
+	public interface IMeasurementRepository
 	{
-		public int Id { get; set; }
-		public DateTime Time { get; set; }
-		public double Value { get; set; } // CO2 værdi i ppm
+		IEnumerable<Measurement> GetMeasurementsBySensorId(int sensorId);
 	}
 
-	// Interface til database
-	public interface IDatabase
-	{
-		IEnumerable<CO2Data> GetCO2DataById(int id);
-	}
-
-	// Controller, der håndterer forespørgsler
+	// Controller, der bruger repository til at hente målinger
 	public class CO2Controller
 	{
-		private readonly IDatabase _database;
+		private readonly IMeasurementRepository _repository;
 
-		public CO2Controller(IDatabase database)
+		public CO2Controller(IMeasurementRepository repository)
 		{
-			_database = database;
+			_repository = repository;
 		}
 
-		// Metode til at hente CO2-data baseret på ID og tidsinterval
-		public IEnumerable<CO2Data> Get(int id, DateTime? startTime = null, DateTime? endTime = null)
+		// Metode til at hente målinger baseret på ID og valgfri tidsfiltre
+		public IEnumerable<Measurement> Get(int sensorId, DateTime? startTime = null, DateTime? endTime = null)
 		{
-			var data = _database.GetCO2DataById(id);
+			var measurements = _repository.GetMeasurementsBySensorId(sensorId);
+
 			if (startTime.HasValue)
-				data = data.Where(d => d.Time >= startTime.Value);
+				measurements = measurements.Where(m => m.Time >= startTime.Value);
 			if (endTime.HasValue)
-				data = data.Where(d => d.Time <= endTime.Value);
-			return data;
+				measurements = measurements.Where(m => m.Time <= endTime.Value);
+
+			return measurements;
 		}
 	}
 
 	[TestClass]
 	public class CO2ControllerTests
 	{
-		private Mock<IDatabase> _mockDatabase;
+		private Mock<IMeasurementRepository> _mockRepository;
 		private CO2Controller _controller;
 
 		[TestInitialize]
 		public void Setup()
 		{
-			// Opsætning af mock-database
-			_mockDatabase = new Mock<IDatabase>();
+			// Opret mock-repository
+			_mockRepository = new Mock<IMeasurementRepository>();
 
-			// Dummy data til test
-			_mockDatabase.Setup(db => db.GetCO2DataById(1)).Returns(new List<CO2Data>
+			// Tilføj mock-data
+			_mockRepository.Setup(repo => repo.GetMeasurementsBySensorId(1)).Returns(new List<Measurement>
 			{
-				new CO2Data { Id = 1, Time = new DateTime(2024, 5, 1), Value = 400 },
-				new CO2Data { Id = 1, Time = new DateTime(2024, 6, 1), Value = 420 },
-				new CO2Data { Id = 1, Time = new DateTime(2024, 7, 1), Value = 430 }
+				new Measurement { Id = 1, SensorId = 1, Time = new DateTime(2024, 4, 5), Value = 400 },
+				new Measurement { Id = 2, SensorId = 1, Time = new DateTime(2024, 6, 10), Value = 420 },
+				new Measurement { Id = 3, SensorId = 1, Time = new DateTime(2024, 8, 15), Value = 430 }
 			});
 
-			_controller = new CO2Controller(_mockDatabase.Object);
+			_controller = new CO2Controller(_mockRepository.Object);
 		}
 
 		[TestMethod]
-		public void Get_ShouldReturnFilteredDataByStartAndEndTime()
+		public void GetById_ShouldReturnFilteredMeasurements()
 		{
-			// Arrange: Definer start- og sluttid
+			// Arrange
 			var startTime = new DateTime(2024, 6, 1);
-			var endTime = new DateTime(2024, 7, 1);
+			var endTime = new DateTime(2024, 8, 1);
 
-			// Act: Hent data med tidsinterval
-			var data = _controller.Get(1, startTime, endTime);
+			// Act
+			var measurements = _controller.Get(1, startTime, endTime);
 
-			// Assert: Tjek, at data er korrekt filtreret
-			Assert.AreEqual(2, data.Count(), "Antallet af returnerede datapunkter er forkert.");
-			foreach (var d in data)
+			// Assert
+			Assert.AreEqual(1, measurements.Count(), "The number of returned measurements is incorrect.");
+			foreach (var m in measurements)
 			{
-				Assert.IsTrue(d.Time >= startTime && d.Time <= endTime, "Et datapunkt er uden for det forventede tidsinterval.");
+				Assert.IsTrue(m.Time >= startTime && m.Time <= endTime, "Measurement is outside the expected time range.");
 			}
 		}
 
 		[TestMethod]
-		public void Get_ShouldReturnAllData_WhenNoTimeFilter()
+		public void GetById_ShouldReturnAllMeasurements_WhenNoFilter()
 		{
-			// Act: Hent data uden tidsfilter
-			var data = _controller.Get(1);
+			// Act
+			var measurements = _controller.Get(1);
 
-			// Assert: Tjek, at alle data returneres
-			Assert.AreEqual(3, data.Count(), "Antallet af returnerede datapunkter er forkert.");
+			// Assert
+			Assert.AreEqual(3, measurements.Count(), "The total number of measurements is incorrect.");
 		}
 	}
 }
-
-
