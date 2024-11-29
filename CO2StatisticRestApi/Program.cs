@@ -13,6 +13,9 @@
 
 //return;
 
+using CO2StatisticRestApi.Services;
+
+DBConnection dBConnection = new DBConnection();
 
 var builder = WebApplication.CreateBuilder(args);
 
