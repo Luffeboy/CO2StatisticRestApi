@@ -84,7 +84,7 @@ public class DBContextTests
 		}
 
 		[TestMethod]
-		public void GetById_ShouldReturnFilteredMeasurements()
+		public void GetById_FilteredMeasurements()
 		{
 			// Arrange
 			var startTime = new DateTime(2024, 6, 1);
@@ -102,7 +102,7 @@ public class DBContextTests
 		}
 
 		[TestMethod]
-		public void GetById_ShouldReturnAllMeasurements_WhenNoFilter()
+		public void GetById_WhenNoFilter()
 		{
 			// Act
 			var measurements = _controller.Get(1);
