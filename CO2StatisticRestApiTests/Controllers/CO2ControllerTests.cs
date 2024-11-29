@@ -27,20 +27,20 @@ namespace CO2StatisticRestApi.Controllers.Tests
 
             foreach(var d in data)
             {
-                Assert.IsTrue(d.Time >= startTime);
+                Assert.IsTrue(d.MeasurementTime >= startTime);
 
             }
 
             data = _controller.Get(1, endTime: endTime);
             foreach (var d in data)
             {
-                Assert.IsTrue(d.Time <= endTime);
+                Assert.IsTrue(d.MeasurementTime <= endTime);
             }
 
             data = _controller.Get(1, startTime, endTime);
             foreach (var d in data)
             {
-                Assert.IsTrue(d.Time <= endTime && d.Time >= startTime);
+                Assert.IsTrue(d.MeasurementTime <= endTime && d.MeasurementTime >= startTime);
             }
         }
 

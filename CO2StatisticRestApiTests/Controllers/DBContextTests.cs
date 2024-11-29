@@ -46,15 +46,15 @@ public class DBContextTests
 			_repository = repository;
 		}
 
-		// Metode til at hente mÂlinger baseret pÂ ID og valgfri tidsfiltre
+		// Metode til at hente mÂlinger baseret pÅEID og valgfri tidsfiltre
 		public IEnumerable<Measurement> Get(int sensorId, DateTime? startTime = null, DateTime? endTime = null)
 		{
 			var measurements = _repository.GetMeasurementsBySensorId(sensorId);
 
 			if (startTime.HasValue)
-				measurements = measurements.Where(m => m.Time >= startTime.Value);
+				measurements = measurements.Where(m => m.MeasurementTime >= startTime.Value);
 			if (endTime.HasValue)
-				measurements = measurements.Where(m => m.Time <= endTime.Value);
+				measurements = measurements.Where(m => m.MeasurementTime <= endTime.Value);
 
 			return measurements;
 		}
@@ -66,25 +66,25 @@ public class DBContextTests
 		private Mock<IMeasurementRepository> _mockRepository;
 		private CO2Controller _controller;
 
-		[TestInitialize]
-		public void Setup()
-		{
-			// Opret mock-repository
-			_mockRepository = new Mock<IMeasurementRepository>();
+		//[TestInitialize]
+		//public void Setup()
+		//{
+		//	// Opret mock-repository
+		//	_mockRepository = new Mock<IMeasurementRepository>();
 
-			// Tilf¯j mock-data
-			_mockRepository.Setup(repo => repo.GetMeasurementsBySensorId(1)).Returns(new List<Measurement>
-			{
-				new Measurement { Id = 1, SensorId = 1, Time = new DateTime(2024, 4, 5), Value = 400 },
-				new Measurement { Id = 2, SensorId = 1, Time = new DateTime(2024, 6, 10), Value = 420 },
-				new Measurement { Id = 3, SensorId = 1, Time = new DateTime(2024, 8, 15), Value = 430 }
-			});
+		//	// Tilf¯j mock-data
+		//	_mockRepository.Setup(repo => repo.GetMeasurementsBySensorId(1)).Returns(new List<Measurement>
+		//	{
+		//		new Measurement { Id = 1, SensorId = 1, Time = new DateTime(2024, 4, 5), Value = 400 },
+		//		new Measurement { Id = 2, SensorId = 1, Time = new DateTime(2024, 6, 10), Value = 420 },
+		//		new Measurement { Id = 3, SensorId = 1, Time = new DateTime(2024, 8, 15), Value = 430 }
+		//	});
 
-			_controller = new CO2Controller(_mockRepository.Object);
-		}
+		//	_controller = new CO2Controller(_mockRepository.Object);
+		//}
 
 		[TestMethod]
-		public void GetById_FilteredMeasurements()
+		public void GetById_ShouldReturnFilteredMeasurements()
 		{
 			// Arrange
 			var startTime = new DateTime(2024, 6, 1);
@@ -97,12 +97,12 @@ public class DBContextTests
 			Assert.AreEqual(1, measurements.Count(), "The number of returned measurements is incorrect.");
 			foreach (var m in measurements)
 			{
-				Assert.IsTrue(m.Time >= startTime && m.Time <= endTime, "Measurement is outside the expected time range.");
+				Assert.IsTrue(m.MeasurementTime >= startTime && m.MeasurementTime <= endTime, "Measurement is outside the expected time range.");
 			}
 		}
 
 		[TestMethod]
-		public void GetById_WhenNoFilter()
+		public void GetById_ShouldReturnAllMeasurements_WhenNoFilter()
 		{
 			// Act
 			var measurements = _controller.Get(1);
