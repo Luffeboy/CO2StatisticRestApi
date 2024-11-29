@@ -11,10 +11,10 @@ namespace CO2StatisticRestApi.Controllers
         // Dummy data - skal erstattes af en database
         private static List<Measurement> _measurements = new List<Measurement>
         {
-            new Measurement { Id = 1, SensorId = 1, Time = new DateTime(2024, 4, 5), Value = 400 },
-            new Measurement { Id = 2, SensorId = 1, Time = new DateTime(2024, 6, 10), Value = 420 },
-            new Measurement { Id = 3, SensorId = 1, Time = new DateTime(2024, 8, 15), Value = 430 },
-            new Measurement { Id = 4, SensorId = 2, Time = new DateTime(2024, 5, 20), Value = 450 }
+            new Measurement { Id = 1, SensorId = 1, MeasurementTime = new DateTime(2024, 4, 5), MeasurementValue = 400 },
+            new Measurement { Id = 2, SensorId = 1, MeasurementTime = new DateTime(2024, 6, 10), MeasurementValue = 420 },
+            new Measurement { Id = 3, SensorId = 1, MeasurementTime = new DateTime(2024, 8, 15), MeasurementValue = 430 },
+            new Measurement { Id = 4, SensorId = 2, MeasurementTime = new DateTime(2024, 5, 20), MeasurementValue = 450 }
         };
         
         // GET api/<CO2Controller>/5?startTime=2024-04-01&endTime=2024-08-01
@@ -28,13 +28,13 @@ namespace CO2StatisticRestApi.Controllers
             // Filtrér efter startTime, hvis det er angivet
             if (startTime.HasValue)
             {
-                measurements = measurements.Where(m => m.Time >= startTime.Value);
+                measurements = measurements.Where(m => m.MeasurementTime >= startTime.Value);
             }
 
             // Filtrér efter endTime, hvis det er angivet
             if (endTime.HasValue)
             {
-                measurements = measurements.Where(m => m.Time <= endTime.Value);
+                measurements = measurements.Where(m => m.MeasurementTime <= endTime.Value);
             }
             
             return measurements;

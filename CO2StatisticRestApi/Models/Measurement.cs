@@ -4,7 +4,7 @@
     {
         public int Id { get; set; }
         public int SensorId { get; set; }
-        public DateTime Time { get; set; }
-        public int Value { get; set; }
+        public DateTime MeasurementTime { get; set; }
+        public int MeasurementValue { get; set; }
     }
 }
