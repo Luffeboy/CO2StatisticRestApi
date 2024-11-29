@@ -10,7 +10,7 @@ namespace CO2StatisticRestApi.Services
         public DbSet<User> Users { get; set; }
         public DbSet<Sensor> Sensors { get; set; }
         public DbSet<Measurement> Measurements { get; set; }
-        public DbSet<SensorUser> SensorUsers { get; set; }
+        public DbSet<SensorUser> SensorUser { get; set; }
         
     }
 }

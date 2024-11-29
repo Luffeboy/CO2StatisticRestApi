@@ -2,28 +2,36 @@
 
 namespace CO2StatisticRestApi.Services
 {
-    public class UserRepository
+    public class UserRepository : DBConnection
     {
-        public UserRepository() { }
-
-        public User GetById()
+        public User? GetById(int id)
         {
-            return null;
+            return _dbContext.Users.FirstOrDefault(user => user.Id == id);
         }
 
-        public bool Login()
+        public User? Login(string email, string password)
         {
-            return false;
+            return _dbContext.Users.FirstOrDefault(user => user.Email == email && user.UserPassword == password);
         }
 
-        public bool ChangeEmail()
+        public bool ChangeEmail(string oldEmail, string password, string newEmail)
         {
-            return false;
+            var user = _dbContext.Users.FirstOrDefault(user => user.Email == oldEmail && user.UserPassword == password);
+            if (user == null)
+                return false;
+            user.Email = newEmail;
+            _dbContext.SaveChanges();
+            return true;
         }
 
-        public bool ChangePassword()
+        public bool ChangePassword(string email, string oldPassword, string newPassword)
         {
-            return false;
+            var user = _dbContext.Users.FirstOrDefault(user => user.Email == email && user.UserPassword == oldPassword);
+            if (user == null)
+                return false;
+            user.UserPassword = newPassword;
+            _dbContext.SaveChanges();
+            return true;
         }
     }
 }
