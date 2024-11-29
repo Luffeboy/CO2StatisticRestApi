@@ -1,10 +1,10 @@
 ﻿use jeppejeppsson_dk_db_test
 
 DROP TABLE IF EXISTS SensorUser
+DROP TABLE IF EXISTS Measurements
 DROP TABLE IF EXISTS Users
 DROP TABLE IF EXISTS Sensors
 DROP TABLE IF EXISTS SensorUser
-DROP TABLE IF EXISTS Measurements
 
 CREATE TABLE Users (
 	Id INT PRIMARY KEY IDENTITY(1, 1),
@@ -13,7 +13,8 @@ CREATE TABLE Users (
 );
 CREATE TABLE Sensors (
 	Id INT PRIMARY KEY IDENTITY(1,1),
-	SensorName VARCHAR(16)
+	SensorName VARCHAR(16),
+	WarningValue INT
 );
 CREATE TABLE SensorUser (
 	Id INT PRIMARY KEY IDENTITY(1,1),
