@@ -13,6 +13,11 @@ namespace CO2StatisticRestApi.Services
         {
             return _dbContext.Users.FirstOrDefault(user => user.Email == email && user.UserPassword == password);
         }
+        public User? Create(string email, string password)
+        {
+            // remember to hash the password
+            throw new NotImplementedException("Yikes, you have to do something?!");
+        }
 
         public bool ChangeEmail(string oldEmail, string password, string newEmail)
         {
