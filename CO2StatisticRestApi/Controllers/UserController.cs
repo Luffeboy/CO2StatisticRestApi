@@ -11,25 +11,26 @@ namespace CO2StatisticRestApi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly DbContextCO2 _context;
+        private UserRepository _userRepository;
 
-        public UsersController(DbContextCO2 context)
+        public UsersController(UserRepository userRepo)
         {
-            _context = context;
+            _userRepository = userRepo;
         }
         
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {
-            return await _context.Users.ToListAsync();
-        }
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        //{
+        //    return _userRepository.get
+        //    //return await _context.Users.ToListAsync();
+        //}
 
         
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public ActionResult<User> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var user = _userRepository.GetById(id);
 
             if (user == null)
             {
@@ -41,12 +42,30 @@ namespace CO2StatisticRestApi.Controllers
 
        
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public ActionResult<User> PostUser(User user)
         {
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            var createdUser = _userRepository.Create(user.Email, user.UserPassword);
+            return Created("/" + createdUser.Id, createdUser);
+            //_context.Users.Add(user);
+            //await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            //return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+        }
+        //[ProducesResponseType(Response.)]
+        [HttpPost("login")]
+        public ActionResult<int> PostLogin(LoginInfo info)
+        {
+            User? user = _userRepository.Login(info.username, info.password);
+            if (user != null)
+                return Ok(user.Id);
+            return BadRequest("Your username or password was incorrect");
+        }
+
+
+        public class LoginInfo
+        {
+            public string username { get; set; }
+            public string password { get; set; }
         }
     }
 }

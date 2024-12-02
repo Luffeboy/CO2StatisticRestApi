@@ -14,6 +14,7 @@
 //return;
 
 using CO2StatisticRestApi.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 DBConnection dBConnection = new DBConnection();
 
@@ -25,11 +26,21 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+builder.Services.AddSingleton<DBConnection>(new DBConnection());
+builder.Services.AddSingleton<UserRepository>(new UserRepository());
 var app = builder.Build();
 
+app.UseCors("AllowAll");
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
