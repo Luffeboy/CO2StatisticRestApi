@@ -17,15 +17,15 @@ namespace CO2StatisticRestApi.Controllers
         {
             _context = context;
         }
-        // GET: api/<UserController>
-        // GET: api/Users
+        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.Users.ToListAsync();
         }
 
-        // GET: api/Users/5
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
@@ -39,7 +39,7 @@ namespace CO2StatisticRestApi.Controllers
             return user;
         }
 
-        // POST: api/Users
+       
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
