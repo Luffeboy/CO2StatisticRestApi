@@ -1,117 +1,130 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CO2StatisticRestApi.Controllers;
 using CO2StatisticRestApi.Models;
 using CO2StatisticRestApi.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CO2StatisticRestApiTests
+
 {
     [TestClass]
     public class UserControllerTests
     {
-        private Mock<IUserService> _mockUserService;
-        private UserController _userController;
+        private UsersController _controller;
+        private UserRepository _userRepository;
+        private DbContextCO2 _context;
 
         [TestInitialize]
-        public void Setup()
+        public void Initialize()
         {
-            _mockUserService = new Mock<IUserService>();
-            _userController = new UserController(_mockUserService.Object);
-        }
+            var options = new DbContextOptionsBuilder<DbContextCO2>()
+                // Use an in-memory database for testing (Download the NuGet package Microsoft.EntityFrameworkCore.InMemory)
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+            // Initialize the UserRepository with the context
+            _userRepository = new UserRepository();
 
-        [TestMethod]
-        public void GetAllUsers_ReturnsOkResult_WithListOfUsers()
-        {
-            // Arrange
-            var users = new List<User>
-            {
+            _controller = new UsersController(_userRepository);
+
+            // Seed the in-memory database with test data
+            _context.Users.AddRange(
                 new User { Id = 1, Email = "user1@example.com", UserPassword = "password1" },
                 new User { Id = 2, Email = "user2@example.com", UserPassword = "password2" }
+            );
+            _context.SaveChanges();
+        }
+
+        [TestMethod]
+        public void GetUser_ReturnsUser_WhenUserExists()
+        {
+            // Act
+            var result = _controller.GetUser(1);
+
+            // Assert
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            var user = okResult.Value as User;
+            Assert.IsNotNull(user);
+            Assert.AreEqual(1, user.Id);
+        }
+
+        [TestMethod]
+        public void GetUser_ReturnsNotFound_WhenUserDoesNotExist()
+        {
+            // Act
+            var result = _controller.GetUser(3);
+
+            // Assert
+            var notFoundResult = result.Result as NotFoundResult;
+            Assert.IsNotNull(notFoundResult);
+            Assert.AreEqual(404, notFoundResult.StatusCode);
+        }
+
+        [TestMethod]
+        public void PostUser_AddsUser_AndReturnsCreatedAtAction()
+        {
+            // Arrange
+            var newUser = new User
+            {
+                Id = 3,
+                Email = "user3@example.com",
+                UserPassword = "password3"
             };
-            _mockUserService.Setup(service => service.GetAllUsers()).Returns(users);
 
             // Act
-            var result = _userController.GetAllUsers();
+            var result = _controller.PostUser(newUser);
 
             // Assert
-            var okResult = result as OkObjectResult;
-            Assert.IsNotNull(okResult);
-            Assert.AreEqual(200, okResult.StatusCode);
-            var returnedUsers = okResult.Value as List<User>;
-            Assert.IsNotNull(returnedUsers);
-            Assert.AreEqual(2, returnedUsers.Count);
-        }
-
-        [TestMethod]
-        public void GetUserById_ReturnsOkResult_WithUser()
-        {
-            // Arrange
-            var user = new User { Id = 1, Email = "user1@example.com", UserPassword = "password1" };
-            _mockUserService.Setup(service => service.GetUserById(1)).Returns(user);
-
-            // Act
-            var result = _userController.GetUserById(1);
-
-            // Assert
-            var okResult = result as OkObjectResult;
-            Assert.IsNotNull(okResult);
-            Assert.AreEqual(200, okResult.StatusCode);
-            var returnedUser = okResult.Value as User;
-            Assert.IsNotNull(returnedUser);
-            Assert.AreEqual(1, returnedUser.Id);
-        }
-
-        [TestMethod]
-        public void AddUser_ReturnsCreatedAtActionResult_WithUser()
-        {
-            // Arrange
-            var user = new User { Id = 1, Email = "user1@example.com", UserPassword = "password1" };
-            _mockUserService.Setup(service => service.AddUser(user)).Returns(user);
-
-            // Act
-            var result = _userController.AddUser(user);
-
-            // Assert
-            var createdAtActionResult = result as CreatedAtActionResult;
+            var createdAtActionResult = result.Result as CreatedAtActionResult;
             Assert.IsNotNull(createdAtActionResult);
             Assert.AreEqual(201, createdAtActionResult.StatusCode);
+
             var returnedUser = createdAtActionResult.Value as User;
             Assert.IsNotNull(returnedUser);
-            Assert.AreEqual(1, returnedUser.Id);
+            Assert.AreEqual(newUser.Email, returnedUser.Email);
         }
 
         [TestMethod]
-        public void UpdateUser_ReturnsNoContentResult()
+        public void PostLogin_ReturnsUserId_WhenCredentialsAreCorrect()
         {
             // Arrange
-            var user = new User { Id = 1, Email = "user1@example.com", UserPassword = "password1" };
-            _mockUserService.Setup(service => service.UpdateUser(user)).Returns(true);
+            var loginInfo = new UsersController.LoginInfo
+            {
+                username = "user1@example.com",
+                password = "password1"
+            };
 
             // Act
-            var result = _userController.UpdateUser(1, user);
+            var result = _controller.PostLogin(loginInfo);
 
             // Assert
-            var noContentResult = result as NoContentResult;
-            Assert.IsNotNull(noContentResult);
-            Assert.AreEqual(204, noContentResult.StatusCode);
+            var okResult = result.Result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            var userId = (int)okResult.Value;
+            Assert.AreEqual(1, userId);
         }
 
         [TestMethod]
-        public void DeleteUser_ReturnsNoContentResult()
+        public void PostLogin_ReturnsUnauthorized_WhenCredentialsAreIncorrect()
         {
             // Arrange
-            _mockUserService.Setup(service => service.DeleteUser(1)).Returns(true);
+            var loginInfo = new UsersController.LoginInfo
+            {
+                username = "user1@example.com",
+                password = "wrongpassword"
+            };
 
             // Act
-            var result = _userController.DeleteUser(1);
+            var result = _controller.PostLogin(loginInfo);
 
             // Assert
-            var noContentResult = result as NoContentResult;
-            Assert.IsNotNull(noContentResult);
-            Assert.AreEqual(204, noContentResult.StatusCode);
+            var unauthorizedResult = result.Result as UnauthorizedResult;
+            Assert.IsNotNull(unauthorizedResult);
+            Assert.AreEqual(401, unauthorizedResult.StatusCode);
         }
     }
 }
