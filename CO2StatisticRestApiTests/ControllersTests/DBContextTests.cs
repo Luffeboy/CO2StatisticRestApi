@@ -104,6 +104,8 @@ public class DBContextTests
 		[TestMethod]
 		public void GetById_ShouldReturnAllMeasurements_WhenNoFilter()
 		{
+			//Arrange
+			
 			// Act
 			var measurements = _controller.Get(1);
 
