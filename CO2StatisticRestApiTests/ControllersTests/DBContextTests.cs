@@ -47,9 +47,12 @@ public class DBContextTests
 		), Times.Once, "UDP data was not sent correctly.");
 	}
 
-
-	[TestMethod]
-    public void GetDataTest() { }
-
+		[TestMethod]
+		public void GetById_ShouldReturnAllMeasurements_WhenNoFilter()
+		{
+			// Act
+			var measurements = _controller.Get(1);
+			// Act
+			var measurements = _controller.Get(1);
 
 }
