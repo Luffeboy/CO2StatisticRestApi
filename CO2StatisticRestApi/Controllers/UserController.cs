@@ -42,9 +42,9 @@ namespace CO2StatisticRestApi.Controllers
 
        
         [HttpPost]
-        public ActionResult<User> PostUser(User user)
+        public ActionResult<User> PostUser(LoginInfo user)
         {
-            var createdUser = _userRepository.Create(user.Email, user.UserPassword);
+            var createdUser = _userRepository.Create(user.username, user.password);
             return Created("/" + createdUser.Id, createdUser);
             //_context.Users.Add(user);
             //await _context.SaveChangesAsync();
