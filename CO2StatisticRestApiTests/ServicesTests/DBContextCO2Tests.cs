@@ -9,26 +9,6 @@ namespace CO2StatisticRestApiTests.ServicesTests;
 [TestClass]
 public class DBContextCO2Tests
 {
-    //   [TestMethod]
-    //   public void validatedatatest()
-    //   {
-    //       // arrange
-    //       data invaliddata1 = new data(1, null);
-    //       data invaliddata2 = new data(1, "");
-    //       data validdata = new data(2, 500);
-
-    //       // act
-    //       bool isvalid1 = validatedata(invaliddata1);
-    //       bool isvalid2 = validatedata(invaliddata2);
-    //	bool isvalid2 = validatedata(validdata);
-
-    //       // assert
-    //       assert.isfalse(isvalid1, "co2-level cannot be null.");
-    //	assert.isinstanceoftype(invaliddata2, typeof(int), "return value is not an int.");
-    //	assert.istrue(isvalid2, "co2-level is ");
-
-
-    //}
 
     // Simuleret interface for database (til test og controller afhængighed)
     public interface IMeasurementRepository
