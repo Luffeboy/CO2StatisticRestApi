@@ -62,7 +62,7 @@ public class DBContextTests
 		//}
 
 		[TestMethod]
-		public void GetById_ReturnFilteredMeasurements()
+		public void GetById_FilteredMeasurements()
 		{
 			// Arrange
 			var startTime = new DateTime(2024, 6, 1);
@@ -80,7 +80,7 @@ public class DBContextTests
 		}
 
 		[TestMethod]
-		public void GetById_ReturnAllMeasurements_NoFilter()
+		public void GetById_AllMeasurements_NoFilter()
 		{
 			// Act
 			var measurements = _controller.Get(1);
