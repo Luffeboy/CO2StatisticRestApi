@@ -6,8 +6,8 @@ namespace CO2StatisticRestApi.Services
 {
     public class UserRepository : DBConnection
     {
-        private const int _saltLength = 16;
-        private const int _storedPasswordLength = 20;
+        private const int _saltLength = 8;
+        private const int _storedPasswordLength = 12;
         private const int _hashIterations = 10000;
         public User? GetById(int id)
         {
@@ -16,6 +16,9 @@ namespace CO2StatisticRestApi.Services
 
         public User? Login(string email, string password)
         {
+            // email too long
+            if (email.Length > 32)
+                return null;
             User? user = _dbContext.Users.FirstOrDefault(user => user.Email == email);
             if (user == null)
                 return null;
@@ -26,6 +29,9 @@ namespace CO2StatisticRestApi.Services
         }
         public User? Create(string email, string password)
         {
+            // email too long
+            if (email.Length > 32)
+                return null;
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                 return null;
             var user = new User() { Email = email, UserPassword = HashPassword(password) };
