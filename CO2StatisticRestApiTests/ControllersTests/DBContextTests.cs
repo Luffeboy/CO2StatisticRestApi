@@ -9,10 +9,6 @@ namespace CO2StatisticRestApiTests;
 [TestClass]
 public class DBContextTests
 {
-
-        // Act
-        bool isValid1 = ValidateData(invalidData1);
-        bool isValid2 = ValidateData(invalidData2);
 	//   [TestMethod]
 	//   public void validatedatatest()
 	//   {
@@ -34,13 +30,13 @@ public class DBContextTests
 
 	//}
 
-	// Simuleret interface for database (til test og controller afhï¿½ngighed)
+	// Simuleret interface for database (til test og controller afhængighed)
 	public interface IMeasurementRepository
 	{
 		IEnumerable<Measurement> GetMeasurementsBySensorId(int sensorId);
 	}
 
-	// Controller, der bruger repository til at hente mï¿½linger
+	// Controller, der bruger repository til at hente målinger
 	public class CO2Controller
 	{
 		private readonly IMeasurementRepository _repository;
@@ -50,7 +46,7 @@ public class DBContextTests
 			_repository = repository;
 		}
 
-		// Metode til at hente mï¿½linger baseret pï¿½EID og valgfri tidsfiltre
+		// Metode til at hente målinger baseret pEID og valgfri tidsfiltre
 		public IEnumerable<Measurement> Get(int sensorId, DateTime? startTime = null, DateTime? endTime = null)
 		{
 			var measurements = _repository.GetMeasurementsBySensorId(sensorId);
@@ -76,7 +72,7 @@ public class DBContextTests
 		//	// Opret mock-repository
 		//	_mockRepository = new Mock<IMeasurementRepository>();
 
-		//	// Tilfï¿½j mock-data
+		//	// Tilføj mock-data
 		//	_mockRepository.Setup(repo => repo.GetMeasurementsBySensorId(1)).Returns(new List<Measurement>
 		//	{
 		//		new Measurement { Id = 1, SensorId = 1, Time = new DateTime(2024, 4, 5), Value = 400 },
