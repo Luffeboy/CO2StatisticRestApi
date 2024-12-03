@@ -9,28 +9,6 @@ namespace CO2StatisticRestApiTests;
 [TestClass]
 public class DBContextTests
 {
-	//   [TestMethod]
-	//   public void validatedatatest()
-	//   {
-	//       // arrange
-	//       data invaliddata1 = new data(1, null);
-	//       data invaliddata2 = new data(1, "");
-	//       data validdata = new data(2, 500);
-
-	//       // act
-	//       bool isvalid1 = validatedata(invaliddata1);
-	//       bool isvalid2 = validatedata(invaliddata2);
-	//	bool isvalid2 = validatedata(validdata);
-
-	//       // assert
-	//       assert.isfalse(isvalid1, "co2-level cannot be null.");
-	//	assert.isinstanceoftype(invaliddata2, typeof(int), "return value is not an int.");
-	//	assert.istrue(isvalid2, "co2-level is ");
-
-
-	//}
-
-	// Simuleret interface for database (til test og controller afhængighed)
 	public interface IMeasurementRepository
 	{
 		IEnumerable<Measurement> GetMeasurementsBySensorId(int sensorId);
@@ -84,7 +62,7 @@ public class DBContextTests
 		//}
 
 		[TestMethod]
-		public void GetById_ShouldReturnFilteredMeasurements()
+		public void GetById_ReturnFilteredMeasurements()
 		{
 			// Arrange
 			var startTime = new DateTime(2024, 6, 1);
@@ -102,7 +80,7 @@ public class DBContextTests
 		}
 
 		[TestMethod]
-		public void GetById_ShouldReturnAllMeasurements_WhenNoFilter()
+		public void GetById_ReturnAllMeasurements_NoFilter()
 		{
 			// Act
 			var measurements = _controller.Get(1);
