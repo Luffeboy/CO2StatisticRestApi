@@ -87,7 +87,7 @@ public class DBContextCO2Tests
             //Arrange
 
             // Act
-            var measurements = _controller!.Get(1);
+            var measurements = _controller.Get(1);
 
             // Assert
             Assert.AreEqual(3, measurements.Count(), "The total number of measurements is incorrect.");
