@@ -25,6 +25,21 @@ namespace CO2StatisticRestApi.Services
             sensor.WarningValue = newWarningValue;
             _dbContext.SaveChanges();
         }
+        public void ChangeWarningValue(int sensorId, int newWarningValue, User user)
+        {
 
+            if (!user.IsAdmin)
+            {
+                throw new UnauthorizedAccessException("Only admins are allowed to change the value.");
+            }
+
+
+            var sensor = GetById(sensorId);
+            if (sensor != null)
+            {
+                sensor.WarningValue = newWarningValue;
+            }
+        }
     }
 }
+

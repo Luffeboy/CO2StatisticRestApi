@@ -56,8 +56,10 @@ namespace CO2StatisticRestApiTests
             int newWarningValue = 2000;
             repo.ChangeWarningValue(sensor.Id, newWarningValue);
             Assert.AreEqual(newWarningValue, sensor.WarningValue);
+
+         
         }
 
-
+       
     }
 }
