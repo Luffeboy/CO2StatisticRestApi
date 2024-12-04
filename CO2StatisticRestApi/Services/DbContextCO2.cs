@@ -7,10 +7,10 @@ namespace CO2StatisticRestApi.Services
     {
         public DbContextCO2(DbContextOptions<DbContextCO2> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Sensor> Sensors { get; set; }
-        public DbSet<Measurement> Measurements { get; set; }
-        public DbSet<SensorUser> SensorUser { get; set; }
+        public DbSet<User>? Users { get; set; }
+        public DbSet<Sensor>? Sensors { get; set; }
+        public DbSet<Measurement>? Measurements { get; set; }
+        public DbSet<SensorUser>? SensorUser { get; set; }
 
         
     }
