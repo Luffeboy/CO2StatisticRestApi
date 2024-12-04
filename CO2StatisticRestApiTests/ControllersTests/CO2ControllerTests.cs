@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CO2StatisticRestApi.Services;
+using CO2StatisticRestApi.Models;
 
 namespace CO2StatisticRestApiTests
 {
@@ -43,6 +45,19 @@ namespace CO2StatisticRestApiTests
                 Assert.IsTrue(d.MeasurementTime <= endTime && d.MeasurementTime >= startTime);
             }
         }
+
+        [TestMethod()]
+        public void ChangeWarningValueTest()
+        {
+            SensorRepository repo = new SensorRepository();
+            int warningValue = 1000;
+            Sensor sensor = repo.Create("test", warningValue);
+            Assert.AreEqual(warningValue, sensor.WarningValue);
+            int newWarningValue = 2000;
+            repo.ChangeWarningValue(sensor.Id, newWarningValue);
+            Assert.AreEqual(newWarningValue, sensor.WarningValue);
+        }
+
 
     }
 }
