@@ -101,4 +101,3 @@ namespace CO2StatisticRestApi.Services
 }
 
 
-}
