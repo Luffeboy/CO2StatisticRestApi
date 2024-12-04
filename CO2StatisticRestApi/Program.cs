@@ -33,8 +33,8 @@ builder.Services.AddCors(options =>
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
-builder.Services.AddSingleton<DBConnection>(new DBConnection());
-builder.Services.AddSingleton<UserRepository>(new UserRepository());
+builder.Services.AddTransient<DBConnection>(); // (new DBConnection());
+builder.Services.AddTransient<UserRepository>(); // (new UserRepository());
 var app = builder.Build();
 
 app.UseCors("AllowAll");
