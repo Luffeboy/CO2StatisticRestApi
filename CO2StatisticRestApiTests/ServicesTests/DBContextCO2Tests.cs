@@ -43,25 +43,25 @@ public class DBContextCO2Tests
     [TestClass]
     public class CO2ControllerTests
     {
-        private Mock<IMeasurementRepository> _mockRepository;
-        private CO2Controller _controller;
+		private Mock<IMeasurementRepository>? _mockRepository;
+		private CO2Controller? _controller; 
 
-        //[TestInitialize]
-        //public void Setup()
-        //{
-        //	// Opret mock-repository
-        //	_mockRepository = new Mock<IMeasurementRepository>();
+		[TestInitialize]
+        public void Setup()
+        {
+            // Opret mock-repository
+            _mockRepository = new Mock<IMeasurementRepository>();
 
-        //	// Tilføj mock-data
-        //	_mockRepository.Setup(repo => repo.GetMeasurementsBySensorId(1)).Returns(new List<Measurement>
-        //	{
-        //		new Measurement { Id = 1, SensorId = 1, Time = new DateTime(2024, 4, 5), Value = 400 },
-        //		new Measurement { Id = 2, SensorId = 1, Time = new DateTime(2024, 6, 10), Value = 420 },
-        //		new Measurement { Id = 3, SensorId = 1, Time = new DateTime(2024, 8, 15), Value = 430 }
-        //	});
+            // Tilføj mock-data
+            _mockRepository.Setup(repo => repo.GetMeasurementsBySensorId(1)).Returns(new List<Measurement>
+            {
+                new Measurement { Id = 1, SensorId = 1, MeasurementTime = new DateTime(2024, 4, 5), MeasurementValue = 400 },
+                new Measurement { Id = 2, SensorId = 1, MeasurementTime = new DateTime(2024, 6, 10), MeasurementValue = 420 },
+                new Measurement { Id = 3, SensorId = 1, MeasurementTime = new DateTime(2024, 8, 15), MeasurementValue = 430 }
+            });
 
-        //	_controller = new CO2Controller(_mockRepository.Object);
-        //}
+            _controller = new CO2Controller(_mockRepository.Object);
+        }
 
         [TestMethod]
         public void GetById_ShouldReturnFilteredMeasurements()
@@ -71,7 +71,7 @@ public class DBContextCO2Tests
             var endTime = new DateTime(2024, 8, 1);
 
             // Act
-            var measurements = _controller.Get(1, startTime, endTime);
+            var measurements = _controller!.Get(1, startTime, endTime);
 
             // Assert
             Assert.AreEqual(1, measurements.Count(), "The number of returned measurements is incorrect.");
@@ -87,7 +87,7 @@ public class DBContextCO2Tests
             //Arrange
 
             // Act
-            var measurements = _controller.Get(1);
+            var measurements = _controller!.Get(1);
 
             // Assert
             Assert.AreEqual(3, measurements.Count(), "The total number of measurements is incorrect.");

@@ -9,5 +9,37 @@ namespace CO2StatisticRestApi.Services
             return _dbContext.Sensors.FirstOrDefault(s => s.Id == id);
         }
 
+        public Sensor Create(string name, int warningValue)
+        {
+            Sensor sensor = new Sensor() { SensorName = name, WarningValue = warningValue };
+            _dbContext.Add(sensor);
+            _dbContext.SaveChanges();
+            return sensor;
+        }
+
+        public void ChangeWarningValue(int id, int newWarningValue)
+        {
+            var sensor = GetById(id);
+            if (sensor == null)
+                return;
+            sensor.WarningValue = newWarningValue;
+            _dbContext.SaveChanges();
+        }
+        public void ChangeWarningValue(int sensorId, int newWarningValue, User user)
+        {
+
+            if (!user.IsAdmin)
+            {
+                throw new UnauthorizedAccessException("Only admins are allowed to change the value.");
+            }
+
+
+            var sensor = GetById(sensorId);
+            if (sensor != null)
+            {
+                sensor.WarningValue = newWarningValue;
+            }
+        }
     }
 }
+
