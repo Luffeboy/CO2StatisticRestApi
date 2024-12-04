@@ -1,10 +1,11 @@
-﻿using CO2StatisticRestApi.Models;
+﻿using CO2StatisticRestApi.Interfaces;
+using CO2StatisticRestApi.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
 namespace CO2StatisticRestApi.Services
 {
-    public class UserRepository : DBConnection
+    public class UserRepository : DBConnection, IUserRepository
     {
         private const int _saltLength = 8;
         private const int _storedPasswordLength = 12;
