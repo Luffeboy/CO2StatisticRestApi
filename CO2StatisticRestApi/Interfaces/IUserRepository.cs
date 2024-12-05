@@ -1,4 +1,4 @@
-﻿using CO2StatisticRestApi.Models;
+﻿using CO2DatabaseLib.Models;
 
 namespace CO2StatisticRestApi.Interfaces
 {

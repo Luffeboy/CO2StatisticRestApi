@@ -1,27 +1,18 @@
 using Microsoft.EntityFrameworkCore;
-<<<<<<< Updated upstream
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CO2StatisticRestApi;
 using CO2DatabaseLib;
 using CO2DatabaseLib.Models;
-=======
-using CO2StatisticRestApi.Services;
-using CO2StatisticRestApi.Models;
 using CO2StatisticRestApi.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
->>>>>>> Stashed changes
 
 namespace CO2StatisticRestApi.Tests
 {
     [TestClass]
     public class UserRepositoryTests
     {
-        private static IUserRepository _repo;
-
-        public DbContextOptions<DbContext> _dbContextOptions;
-        public DbContext _dbContext;
         public UserRepository _userRepository;
 
         [TestInitialize]
@@ -74,7 +65,7 @@ namespace CO2StatisticRestApi.Tests
         public void LoginTest()
         {
             // Arrange
-            string email = "test@example.com";
+            string email = "loginTest@example.com";
             string password = "Password123";
             _userRepository.Create(email, password);
 
@@ -84,13 +75,15 @@ namespace CO2StatisticRestApi.Tests
             // Assert
             Assert.IsNotNull(user);
             Assert.AreEqual(email, user.Email);
+
+            Assert.IsNotNull(_userRepository.DeleteUser(email, password));
         }
 
         [TestMethod]
         public void ChangeEmailTest()
         {
             // Arrange
-            string oldEmail = "test@example.com";
+            string oldEmail = "changeEmail@example.com";
             string password = "Password123";
             string newEmail = "newtest@example.com";
             _userRepository.Create(oldEmail, password);
@@ -103,14 +96,15 @@ namespace CO2StatisticRestApi.Tests
             Assert.IsTrue(result);
             Assert.IsNotNull(user);
             Assert.AreEqual(newEmail, user.Email);
+
+            Assert.IsNotNull(_userRepository.DeleteUser(newEmail, password));
         }
 
         [TestMethod]
         public void ChangePasswordTest()
         {
-
             // Arrange
-            string email = "test@example.com";
+            string email = "changePassword@example.com";
             string oldPassword = "Password123";
             string newPassword = "NewPassword123";
             _userRepository.Create(email, oldPassword);
@@ -122,6 +116,7 @@ namespace CO2StatisticRestApi.Tests
             // Assert
             Assert.IsTrue(result);
             Assert.IsNotNull(user);
+            Assert.IsNotNull(_userRepository.DeleteUser(email, newPassword));
         }
     }
 }

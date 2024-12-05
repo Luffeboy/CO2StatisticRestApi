@@ -1,6 +1,4 @@
-﻿using CO2StatisticRestApi.Models;
-using CO2StatisticRestApi.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CO2DatabaseLib;
 using CO2DatabaseLib.Models;
