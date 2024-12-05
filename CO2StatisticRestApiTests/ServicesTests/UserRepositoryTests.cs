@@ -43,6 +43,7 @@ namespace CO2StatisticRestApi.Tests
             // Assert
             Assert.IsNotNull(user);
             Assert.AreEqual(email, user.Email);
+            Assert.IsNotNull(_userRepository.DeleteUser(email, password));
         }
 
         [TestMethod]
@@ -59,6 +60,7 @@ namespace CO2StatisticRestApi.Tests
             // Assert
             Assert.IsNotNull(user);
             Assert.AreEqual(createdUser.Id, user.Id);
+            Assert.IsNotNull(_userRepository.DeleteUser(email, password));
         }
 
         [TestMethod]
