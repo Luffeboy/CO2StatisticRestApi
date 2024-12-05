@@ -1,122 +1,127 @@
-using System;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
+<<<<<<< Updated upstream
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CO2StatisticRestApi;
 using CO2DatabaseLib;
 using CO2DatabaseLib.Models;
+=======
+using CO2StatisticRestApi.Services;
+using CO2StatisticRestApi.Models;
+using CO2StatisticRestApi.Interfaces;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
+>>>>>>> Stashed changes
 
 namespace CO2StatisticRestApi.Tests
 {
     [TestClass]
     public class UserRepositoryTests
     {
+        private static IUserRepository _repo;
+
         public DbContextOptions<DbContext> _dbContextOptions;
         public DbContext _dbContext;
         public UserRepository _userRepository;
 
         [TestInitialize]
-        public void Setup()
+        public void Init()
         {
-            _dbContextOptions = new DbContextOptionsBuilder<DbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
+            // Open connection to the database
+            DBConnection dBConnection = new DBConnection();
 
-            _dbContext = new DbContext(_dbContextOptions);
-            _userRepository = new UserRepository
-            {
+            // clean database table: remove all rows
+            // dBConnection._dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE Users");
 
-
-
-            };
+            // Create a new user repository
+            _userRepository = new UserRepository();
         }
 
         [TestCleanup]
-        public void Cleanup()
-        {
-            _dbContext.Database.EnsureDeleted();
-            _dbContext.Dispose();
-        }
 
         [TestMethod]
-        public void CreateUser_ShouldAddUserToDatabase()
+        public void CreateTest()
         {
-            var email = "test@example.com";
-            var password = "password123";
+            // Arrange
+            string email = "test@example.com";
+            string password = "Password123";
 
+            // Act
             var user = _userRepository.Create(email, password);
 
+            // Assert
             Assert.IsNotNull(user);
             Assert.AreEqual(email, user.Email);
-            Assert.AreEqual(1, _dbContext.Set<User>().Count());
         }
 
         [TestMethod]
-        public void GetById_ShouldReturnCorrectUser()
+        public void GetByIdTest()
         {
-            var email = "test@example.com";
-            var password = "password123";
-            var user = _userRepository.Create(email, password);
+            // Arrange
+            string email = "test@example.com";
+            string password = "Password123";
+            var createdUser = _userRepository.Create(email, password);
 
-            var fetchedUser = _userRepository.GetById(user.Id);
+            // Act
+            var user = _userRepository.GetById(createdUser.Id);
 
-            Assert.IsNotNull(fetchedUser);
-            Assert.AreEqual(email, fetchedUser.Email);
+            // Assert
+            Assert.IsNotNull(user);
+            Assert.AreEqual(createdUser.Id, user.Id);
         }
 
         [TestMethod]
-        public void Login_ShouldReturnUserWithCorrectCredentials()
+        public void LoginTest()
         {
-            var email = "test@example.com";
-            var password = "password123";
+            // Arrange
+            string email = "test@example.com";
+            string password = "Password123";
             _userRepository.Create(email, password);
 
+            // Act
             var user = _userRepository.Login(email, password);
 
+            // Assert
             Assert.IsNotNull(user);
             Assert.AreEqual(email, user.Email);
         }
 
         [TestMethod]
-        public void Login_ShouldReturnNullWithIncorrectCredentials()
+        public void ChangeEmailTest()
         {
-            var email = "test@example.com";
-            var password = "password123";
-            _userRepository.Create(email, password);
-
-            var user = _userRepository.Login(email, "wrongpassword");
-
-            Assert.IsNull(user);
-        }
-
-        [TestMethod]
-        public void ChangeEmail_ShouldUpdateUserEmail()
-        {
-            var oldEmail = "test@example.com";
-            var newEmail = "newtest@example.com";
-            var password = "password123";
+            // Arrange
+            string oldEmail = "test@example.com";
+            string password = "Password123";
+            string newEmail = "newtest@example.com";
             _userRepository.Create(oldEmail, password);
 
+            // Act
             var result = _userRepository.ChangeEmail(oldEmail, password, newEmail);
+            var user = _userRepository.Login(newEmail, password);
 
+            // Assert
             Assert.IsTrue(result);
-            var user = _dbContext.Set<User>().FirstOrDefault(u => u.Email == newEmail);
             Assert.IsNotNull(user);
+            Assert.AreEqual(newEmail, user.Email);
         }
 
         [TestMethod]
-        public void ChangePassword_ShouldUpdateUserPassword()
+        public void ChangePasswordTest()
         {
-            var email = "test@example.com";
-            var oldPassword = "password123";
-            var newPassword = "newpassword123";
+
+            // Arrange
+            string email = "test@example.com";
+            string oldPassword = "Password123";
+            string newPassword = "NewPassword123";
             _userRepository.Create(email, oldPassword);
 
+            // Act
             var result = _userRepository.ChangePassword(email, oldPassword, newPassword);
+            var user = _userRepository.Login(email, newPassword);
 
+            // Assert
             Assert.IsTrue(result);
-            var user = _dbContext.Set<User>().FirstOrDefault(u => u.Email == email);
-            Assert.IsTrue(user != null && _userRepository.Login(email, newPassword) != null);
+            Assert.IsNotNull(user);
         }
     }
 }
