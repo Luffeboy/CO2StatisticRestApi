@@ -1,6 +1,7 @@
-//using CO2StatisticRestApi.Services;
-//using Microsoft.EntityFrameworkCore;
-//using CO2StatisticRestApi.Models;
+using CO2StatisticRestApi;
+using Microsoft.EntityFrameworkCore;
+using CO2DatabaseLib;
+using CO2DatabaseLib.Models;
 
 //var optionsBuilder = new DbContextOptionsBuilder<DbContextCO2>();
 //optionsBuilder.UseSqlServer("Data Source=mssql17.unoeuro.com;Initial Catalog=jeppejeppsson_dk_db_test;Persist Security Info=True;User ID=jeppejeppsson_dk;Password=gk3BR45pbxtGwHnard6f;TrustServerCertificate=True");
@@ -13,7 +14,6 @@
 
 //return;
 
-using CO2StatisticRestApi.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 DBConnection dBConnection = new DBConnection();

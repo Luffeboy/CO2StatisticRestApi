@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CO2StatisticRestApi;
-using CO2StatisticRestApi.Models;
+using CO2DatabaseLib;
+using CO2DatabaseLib.Models;
 
 namespace CO2StatisticRestApi.Controllers
 {
