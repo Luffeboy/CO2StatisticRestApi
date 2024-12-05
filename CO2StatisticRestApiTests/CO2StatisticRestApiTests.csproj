@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <Reference Include="CO2DatabaseLib">
-      <HintPath>..\..\..\..\Downloads\CO2DatabaseLib-master\CO2DatabaseLib-master\CO2DatabaseLib\bin\Debug\net8.0\CO2DatabaseLib.dll</HintPath>
+      <HintPath>..\CO2DatabaseLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 
