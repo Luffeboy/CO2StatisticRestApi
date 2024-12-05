@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CO2StatisticRestApi.Services;
-using CO2StatisticRestApi.Models;
+using CO2StatisticRestApi;
+using CO2DatabaseLib;
+using CO2DatabaseLib.Models;
 
 namespace CO2StatisticRestApiTests
 {

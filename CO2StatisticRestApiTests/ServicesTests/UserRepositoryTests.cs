@@ -2,8 +2,9 @@ using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CO2StatisticRestApi.Models;
-using CO2StatisticRestApi.Services;
+using CO2StatisticRestApi;
+using CO2DatabaseLib;
+using CO2DatabaseLib.Models;
 
 namespace CO2StatisticRestApi.Tests
 {

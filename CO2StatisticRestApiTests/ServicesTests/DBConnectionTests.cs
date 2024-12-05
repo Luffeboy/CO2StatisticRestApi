@@ -1,5 +1,7 @@
-using CO2StatisticRestApi.Services;
+using CO2StatisticRestApi;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using CO2DatabaseLib;
+using CO2DatabaseLib.Models;
 
 namespace CO2StatisticRestApiTests
 {

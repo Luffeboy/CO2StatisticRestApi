@@ -26,6 +26,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="CO2DatabaseLib">
+      <HintPath>..\..\..\..\..\Downloads\CO2DatabaseLib-master\CO2DatabaseLib-master\CO2DatabaseLib\bin\Debug\net8.0\CO2DatabaseLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 

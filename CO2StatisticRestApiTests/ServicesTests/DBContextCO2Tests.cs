@@ -2,7 +2,8 @@ using CO2StatisticRestApi;
 using System.Net.Sockets;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Moq;
-using CO2StatisticRestApi.Models;
+using CO2DatabaseLib;
+using CO2DatabaseLib.Models;
 
 namespace CO2StatisticRestApiTests.ServicesTests;
 
