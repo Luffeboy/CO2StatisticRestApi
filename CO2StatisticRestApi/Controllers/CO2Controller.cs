@@ -37,7 +37,7 @@ namespace CO2StatisticRestApi.Controllers
                 measurements = measurements.Where(m => m.MeasurementTime <= endTime.Value);
             }
             
-            return measurements;
+            return measurements.OrderBy(m => m.MeasurementTime);
         }
 
         // POST api/<CO2Controller>
