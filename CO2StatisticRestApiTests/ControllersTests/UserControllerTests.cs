@@ -2,9 +2,10 @@
 //using Microsoft.Extensions.Options;
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using CO2StatisticRestApi.Controllers;
-//using CO2StatisticRestApi.Models;
-//using CO2StatisticRestApi.Services;
+//using CO2DatabaseLib.Models;
+//using CO2DatabaseLib;
 //using Microsoft.AspNetCore.Mvc;
+//using static CO2StatisticRestApi.Controllers.UsersController;
 
 //namespace CO2StatisticRestApiTests
 
@@ -17,23 +18,16 @@
 //        private DbContextCO2 _context;
 
 //        [TestInitialize]
-//        public void Initialize()
+//        public void Init()
 //        {
-//            var options = new DbContextOptionsBuilder<DbContextCO2>()
-//                // Use an in-memory database for testing (Download the NuGet package Microsoft.EntityFrameworkCore.InMemory)
-//                .UseInMemoryDatabase(databaseName: "TestDatabase")
-//                .Options;
-//            // Initialize the UserRepository with the context
+//            // Open connection to the database
+//            DBConnection dBConnection = new DBConnection();
+
+//            // clean database table: remove all rows
+//            // dBConnection._dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE Users");
+
+//            // Create a new user repository
 //            _userRepository = new UserRepository();
-
-//            _controller = new UsersController(_userRepository);
-
-//            // Seed the in-memory database with test data
-//            _context.Users.AddRange(
-//                new User { Id = 1, Email = "user1@example.com", UserPassword = "password1" },
-//                new User { Id = 2, Email = "user2@example.com", UserPassword = "password2" }
-//            );
-//            _context.SaveChanges();
 //        }
 
 //        [TestMethod]
@@ -67,15 +61,19 @@
 //        public void PostUser_AddsUser_AndReturnsCreatedAtAction()
 //        {
 //            // Arrange
-//            var newUser = new User
-//            {
-//                Id = 3,
-//                Email = "user3@example.com",
-//                UserPassword = "password3"
-//            };
+//            var newUser = new User { Id = 3, Email = "user3@example.com", UserPassword = "password3" };
 
 //            // Act
 //            var result = _controller.PostUser(newUser);
+            
+
+            
+
+//            //public ActionResult<User> PostUser(LoginInfo user)
+//            //{
+//            //    var createdUser = _userRepository.Create(user.username, user.password);
+//            //    return Created("/" + createdUser.Id, createdUser);
+//            //   
 
 //            // Assert
 //            var createdAtActionResult = result.Result as CreatedAtActionResult;
