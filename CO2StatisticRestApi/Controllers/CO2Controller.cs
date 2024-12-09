@@ -59,6 +59,30 @@ namespace CO2StatisticRestApi.Controllers
             // Returnerer en CreatedAtAction, som returnerer en 201 Created statuskode og en location header.
             return CreatedAtAction(nameof(Get), new { id = measurement.SensorId }, measurement);
         }
+
+        // Change warning value
+        [HttpPost("ChangeWarning")] // could be a put method
+        public ActionResult<string> PostChangeWarning([FromBody] ChangeWarningData data)
+        {
+            UserRepository userRepository = new UserRepository();
+            var user = userRepository.GetById(data.userId);
+            if (!user.IsAdmin)
+                return BadRequest("You are not an admin");
+            SensorRepository sensorRepository = new SensorRepository();
+            var sensor = sensorRepository.GetById(data.sensorId);
+            if (sensor == null)
+                return BadRequest("The sensor doesn't exist");
+
+            return Ok("Changed");
+
+        }
+
+        public class ChangeWarningData
+        {
+            public int userId { get; set; }
+            public int sensorId { get; set; }
+            public int warningValue { get; set; }
+        }
     }
 }
 
