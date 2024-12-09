@@ -55,6 +55,7 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddTransient<DBConnection>(); // (new DBConnection());
 builder.Services.AddTransient<UserRepository>(); // (new UserRepository());
+builder.Services.AddTransient<SensorUserRepository>();
 var app = builder.Build();
 
 app.UseCors("AllowAll");

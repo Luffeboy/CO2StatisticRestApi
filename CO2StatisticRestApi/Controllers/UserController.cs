@@ -12,10 +12,12 @@ namespace CO2StatisticRestApi.Controllers
     public class UsersController : ControllerBase
     {
         private UserRepository _userRepository;
+        private SensorUserRepository _sensorUserRepository;
 
-        public UsersController(UserRepository userRepo)
+        public UsersController(UserRepository userRepo, SensorUserRepository sensorUserRepo)
         {
             _userRepository = userRepo;
+            _sensorUserRepository = sensorUserRepo;
         }
         
 
@@ -59,6 +61,27 @@ namespace CO2StatisticRestApi.Controllers
             if (user != null)
                 return Ok(user.Id);
             return BadRequest("Your username or password was incorrect");
+        }
+
+        [HttpGet("sensors/{id}")]
+        public ActionResult<IEnumerable<Sensor>> PostLogin(int id)
+        {
+            User? user = _userRepository.GetById(id);
+            if (user == null)
+                return NotFound("No such user");
+            return Ok(_sensorUserRepository.GetByUserId(id));
+        }
+        // subscribe to sensor
+        [HttpPost("{id}")]
+        public ActionResult<SensorUser> PostSubscribe(int id, [FromBody] LoginInfo info)
+        {
+            User? user = _userRepository.Login(info.username, info.password);
+            if (user == null)
+                return BadRequest("Unable to subscribe");
+            SensorUser? sensorUser = _sensorUserRepository.SubscribeToSensor(user.Id, id);
+            if (sensorUser == null)
+                return BadRequest("Unable to subscribe");
+            return Ok(sensorUser);
         }
 
 
