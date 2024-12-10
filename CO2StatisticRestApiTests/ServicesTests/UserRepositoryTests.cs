@@ -28,8 +28,6 @@ namespace CO2StatisticRestApi.Tests
             _userRepository = new UserRepository();
         }
 
-        [TestCleanup]
-
         [TestMethod]
         public void CreateTest()
         {
