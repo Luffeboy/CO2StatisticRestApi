@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using static CO2StatisticRestApi.Controllers.UsersController;
 
 namespace CO2StatisticRestApiTests
-
 {
     [TestClass]
     public class UserControllerTests
@@ -24,30 +23,40 @@ namespace CO2StatisticRestApiTests
             DBConnection dBConnection = new DBConnection();
 
             // Create a new user repository
-            _userRepository = new UserRepository();
+            UsersController _repo = new UsersController(_userRepository);
         }
 
         [TestMethod]
         public void GetUser_ReturnsUser_WhenUserExists()
         {
+            // Arrange
+            var user = new User { Email = "test@example.com", UserPassword = "Password123" };
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
             // Act
+<<<<<<< Updated upstream
             // Use the Get method from the controller to get a user with id 1
             var result = _controller.GetUser(1);
+=======
+            var result = _controller.GetUser(user.Id);
+>>>>>>> Stashed changes
 
             // Assert
             var okResult = result.Result as OkObjectResult;
             Assert.IsNotNull(okResult);
             Assert.AreEqual(200, okResult.StatusCode);
-            var user = okResult.Value as User;
-            Assert.IsNotNull(user);
-            Assert.AreEqual(1, user.Id);
+            var returnedUser = okResult.Value as User;
+            Assert.IsNotNull(returnedUser);
+            Assert.AreEqual(user.Id, returnedUser.Id);
+            _repo.DeleteUser(email, password)
         }
 
         [TestMethod]
         public void GetUser_ReturnsNotFound_WhenUserDoesNotExist()
         {
             // Act
-            var result = _controller.GetUser(3);
+            var result = _controller.GetUser(1);
 
             // Assert
             var notFoundResult = result.Result as NotFoundResult;
@@ -59,10 +68,11 @@ namespace CO2StatisticRestApiTests
         public void PostUser_AddsUser_AndReturnsCreatedAtAction()
         {
             // Arrange
-            var newUser = new User { Id = 3, Email = "user3@example.com", UserPassword = "password3" };
+            var newUser = new LoginInfo { username = "user3@example.com", password = "password3" };
 
             // Act
             var result = _controller.PostUser(newUser);
+<<<<<<< Updated upstream
 
 
 
@@ -72,6 +82,8 @@ namespace CO2StatisticRestApiTests
             var createdUser = _userRepository.Create(user.username, user.password);
             return Created("/" + createdUser.Id, createdUser);
 
+=======
+>>>>>>> Stashed changes
 
             // Assert
             var createdAtActionResult = result.Result as CreatedAtActionResult;
@@ -80,14 +92,18 @@ namespace CO2StatisticRestApiTests
 
             var returnedUser = createdAtActionResult.Value as User;
             Assert.IsNotNull(returnedUser);
-            Assert.AreEqual(newUser.Email, returnedUser.Email);
+            Assert.AreEqual(newUser.username, returnedUser.Email);
         }
 
         [TestMethod]
         public void PostLogin_ReturnsUserId_WhenCredentialsAreCorrect()
         {
             // Arrange
-            var loginInfo = new UsersController.LoginInfo
+            var user = new User { Email = "user1@example.com", UserPassword = "password1" };
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            var loginInfo = new LoginInfo
             {
                 username = "user1@example.com",
                 password = "password1"
@@ -101,14 +117,18 @@ namespace CO2StatisticRestApiTests
             Assert.IsNotNull(okResult);
             Assert.AreEqual(200, okResult.StatusCode);
             var userId = (int)okResult.Value;
-            Assert.AreEqual(1, userId);
+            Assert.AreEqual(user.Id, userId);
         }
 
         [TestMethod]
-        public void PostLogin_ReturnsUnauthorized_WhenCredentialsAreIncorrect()
+        public void PostLogin_ReturnsBadRequest_WhenCredentialsAreIncorrect()
         {
             // Arrange
-            var loginInfo = new UsersController.LoginInfo
+            var user = new User { Email = "user1@example.com", UserPassword = "password1" };
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            var loginInfo = new LoginInfo
             {
                 username = "user1@example.com",
                 password = "wrongpassword"
@@ -118,9 +138,10 @@ namespace CO2StatisticRestApiTests
             var result = _controller.PostLogin(loginInfo);
 
             // Assert
-            var unauthorizedResult = result.Result as UnauthorizedResult;
-            Assert.IsNotNull(unauthorizedResult);
-            Assert.AreEqual(401, unauthorizedResult.StatusCode);
+            var badRequestResult = result.Result as BadRequestObjectResult;
+            Assert.IsNotNull(badRequestResult);
+            Assert.AreEqual(400, badRequestResult.StatusCode);
+            Assert.AreEqual("Your username or password was incorrect", badRequestResult.Value);
         }
     }
 }
