@@ -7,6 +7,7 @@ using CO2StatisticRestApi.Interfaces;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace CO2StatisticRestApi.Tests
 {
@@ -78,6 +79,37 @@ namespace CO2StatisticRestApi.Tests
 
             Assert.IsNotNull(_userRepository.DeleteUser(email, password));
         }
+
+        //public User? DeleteUser(string email, string password)
+        //{
+        //    User user = Login(email, password);
+        //    if (user == null)
+        //    {
+        //        return null;
+        //    }
+
+        //    base._dbContext.Users.Remove(user);
+        //    base._dbContext.SaveChanges();
+        //    return user;
+        //}
+
+        [TestMethod]
+        public void DeleteUserTest()
+        {
+            // Arrange
+            string email = "deletemail@example.com";
+            string password = "deletepassword123";
+            _userRepository.Create(email, password);
+
+            // Act
+            var deletedUser = _userRepository.DeleteUser(email, password);
+            var user = _userRepository.Login(email, password);
+
+            // Assert
+            Assert.IsNotNull(deletedUser);
+            Assert.IsNull(user);
+        }
+
 
         [TestMethod]
         public void ChangeEmailTest()
