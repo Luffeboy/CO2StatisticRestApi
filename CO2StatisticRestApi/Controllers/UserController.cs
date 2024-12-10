@@ -72,12 +72,27 @@ namespace CO2StatisticRestApi.Controllers
                 return BadRequest("Unable to subscribe");
             return Ok(sensorUser);
         }
+        // subscribe to sensor
+        [HttpPost("changePassword")]
+        public ActionResult<bool> PostChangePassword([FromBody] ChangePasswordInfo info)
+        {
+            bool b = _userRepository.ChangePassword(info.username, info.password, info.newPassword);
+            if (!b)
+                return BadRequest(false);
+            return Ok(true);
+        }
 
 
         public class LoginInfo
         {
             public string username { get; set; }
             public string password { get; set; }
+        }
+        public class ChangePasswordInfo
+        {
+            public string username { get; set; }
+            public string password { get; set; }
+            public string newPassword { get; set; }
         }
     }
 }
