@@ -20,15 +20,6 @@ namespace CO2StatisticRestApi.Controllers
             _sensorUserRepository = sensorUserRepo;
         }
         
-
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        //{
-        //    return _userRepository.get
-        //    //return await _context.Users.ToListAsync();
-        //}
-
-        
         [HttpGet("{id}")]
         public ActionResult<User> GetUser(int id)
         {
@@ -47,11 +38,9 @@ namespace CO2StatisticRestApi.Controllers
         public ActionResult<User> PostUser(LoginInfo user)
         {
             var createdUser = _userRepository.Create(user.username, user.password);
+            if (createdUser == null)
+                return BadRequest("You are unable to create a new account, with that email or password");
             return Created("/" + createdUser.Id, createdUser);
-            //_context.Users.Add(user);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
         //[ProducesResponseType(Response.)]
         [HttpPost("login")]
