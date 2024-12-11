@@ -42,7 +42,7 @@ namespace CO2StatisticRestApi.Controllers
         {
             UserRepository userRepository = new UserRepository();
             var user = userRepository.GetById(data.userId);
-            if (!user.IsAdmin)
+            if (user == null || !user.IsAdmin)
                 return BadRequest("You are not an admin");
             SensorRepository sensorRepository = new SensorRepository();
             var sensor = sensorRepository.GetById(data.sensorId);
