@@ -14,27 +14,27 @@ namespace CO2StatisticRestApi.Controllers
         public ActionResult<IEnumerable<Measurement>> Get(int id, [FromQuery] DateTime? startTime = null, [FromQuery] DateTime? endTime = null)
         {
             MeasurementRepository measurementRepository = new MeasurementRepository();
-            return Ok(measurementRepository.GetInTimeFrame(id, startTime, endTime).OrderBy(m => m.MeasurementTime));
+            return Ok(measurementRepository.GetInTimeFrame(id, startTime, endTime).OrderBy(m => m.MeasurementTime).ToList());
         }
 
         // POST api/<CO2Controller>
         //Laver en post metode, som tager en Measurement som parameter.
-        [HttpPost]
-        public ActionResult Post([FromBody] Measurement measurement)
-        {
-            // Hvis der ikke er nogen måling, returneres en BadRequest
-            if (measurement == null)
-            {
-                return BadRequest("Need Measurement.");
-            }
-            MeasurementRepository measurementRepository = new MeasurementRepository();
-            // Filtrér målinger baseret på SensorId
-            var measure = new Measurement() { MeasurementTime = measurement.MeasurementTime, MeasurementValue = measurement.MeasurementValue, SensorId = measurement.SensorId };
-            measurementRepository._dbContext.Measurements.Add(measure);
+        //[HttpPost]
+        //public ActionResult Post([FromBody] Measurement measurement)
+        //{
+        //    // Hvis der ikke er nogen måling, returneres en BadRequest
+        //    if (measurement == null)
+        //    {
+        //        return BadRequest("Need Measurement.");
+        //    }
+        //    MeasurementRepository measurementRepository = new MeasurementRepository();
+        //    // Filtrér målinger baseret på SensorId
+        //    var measure = new Measurement() { MeasurementTime = measurement.MeasurementTime, MeasurementValue = measurement.MeasurementValue, SensorId = measurement.SensorId };
+        //    measurementRepository._dbContext.Measurements.Add(measure);
 
-            // Returnerer en CreatedAtAction, som returnerer en 201 Created statuskode og en location header.
-            return Created("/" + measure.Id, measure);
-        }
+        //    // Returnerer en CreatedAtAction, som returnerer en 201 Created statuskode og en location header.
+        //    return Created("/" + measure.Id, measure);
+        //}
 
         // Change warning value
         [HttpPost("ChangeWarning")] // could be a put method
@@ -50,7 +50,6 @@ namespace CO2StatisticRestApi.Controllers
                 return BadRequest("The sensor doesn't exist");
 
             return Ok("Changed");
-
         }
 
         public class ChangeWarningData
