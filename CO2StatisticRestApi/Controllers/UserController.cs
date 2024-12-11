@@ -42,6 +42,15 @@ namespace CO2StatisticRestApi.Controllers
                 return BadRequest("You are unable to create a new account, with that email or password");
             return Created("/" + createdUser.Id, createdUser);
         }
+        [HttpDelete]
+        public ActionResult<string> DeleteUser(LoginInfo user)
+        {
+            var createdUser = _userRepository.DeleteUser(user.username, user.password);
+            if (createdUser == null)
+                return BadRequest("You need to use your email and password, to delete your account");
+            
+            return Ok("Your account has been deleted");
+        }
         //[ProducesResponseType(Response.)]
         [HttpPost("login")]
         public ActionResult<int> PostLogin(LoginInfo info)
@@ -53,7 +62,7 @@ namespace CO2StatisticRestApi.Controllers
         }
 
         [HttpGet("sensors/{id}")]
-        public ActionResult<IEnumerable<Sensor>> PostLogin(int id)
+        public ActionResult<IEnumerable<Sensor>> PostGetSensors(int id)
         {
             User? user = _userRepository.GetById(id);
             if (user == null)
