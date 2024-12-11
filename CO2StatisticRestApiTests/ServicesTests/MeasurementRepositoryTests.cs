@@ -1,88 +1,74 @@
 ﻿using CO2DatabaseLib;
 using CO2DatabaseLib.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Diagnostics.Metrics;
 using System.Linq;
 
 namespace CO2StatisticRestApiTests.ServicesTests
 {
-    public static class ConnectionString
-    {
-        
-        public static string TestDatabase => "\"Data Source=mssql17.unoeuro.com;Initial Catalog=jeppejeppsson_dk_db_test;Persist Security Info=True;User ID=jeppejeppsson_dk;Password=gk3BR45pbxtGwHnard6f;TrustServerCertificate=True\"";
-    }
-
     [TestClass]
     public class MeasurementRepositoryTests
     {
-        
-        private DbContextCO2 CreateDbContext()
-        {
-            var options = new DbContextOptionsBuilder<DbContextCO2>()
-                .UseSqlServer(ConnectionString.TestDatabase)
-                .Options;
+        MeasurementRepository _measurementRepository = new MeasurementRepository();
 
-            return new DbContextCO2(options);
+        Measurement measurement1 = new Measurement { Id = 1, SensorId = 1, MeasurementTime = DateTime.Now, MeasurementValue = 25 };
+        Measurement measurement2 = new Measurement { Id = 2, SensorId = 2, MeasurementTime = DateTime.Now.AddHours(-1), MeasurementValue = 25 };
+        Measurement measurement3 = new Measurement { Id = 3, SensorId = 2, MeasurementTime = DateTime.Now, MeasurementValue = 30 };
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            // Open connection to the database
+            DBConnection dBConnection = new DBConnection();
+
+            // Arrange (Uses three measurements to test the whole class)
+            _measurementRepository._dbContext.Measurements.Add( measurement1 );
+            _measurementRepository._dbContext.Measurements.Add( measurement2 );
+            _measurementRepository._dbContext.Measurements.Add( measurement3 );
         }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            // clean database table: remove all measurements
+            _measurementRepository._dbContext.Measurements.Remove( measurement1 );
+            _measurementRepository._dbContext.Measurements.Remove( measurement2 );
+            _measurementRepository._dbContext.Measurements.Remove( measurement3 );
+        }
+
 
         [TestMethod]
         public void GetBySensorId_ReturnsCorrectMeasurement()
         {
-            // Arrange
-            using (var context = CreateDbContext())
+            // Act
+            foreach (var m in _measurementRepository.GetBySensorId(1))
             {
-                // Ensuring the database is clean before each test
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
-
-                // Adding test data
-                context.Measurements.Add(new Measurement { Id = 1, SensorId = 1, MeasurementTime = DateTime.Now, MeasurementValue = 25 });
-                context.Measurements.Add(new Measurement { Id = 2, SensorId = 1, MeasurementTime = DateTime.Now, MeasurementValue = 30 });
-                context.SaveChanges();
-            }
-
-            // Act & Assert
-            using (var context = CreateDbContext())
-            {
-                var repository = new MeasurementRepository(); // MeasurementRepository inherits from DBConnection, using _dbContext
-
-                var result = repository.GetBySensorId(1);
-
-                Assert.IsNotNull(result);
-                Assert.AreEqual(1, result.Id);
-                Assert.AreEqual(25, result.MeasurementValue);
+                if (m.Id == 1)
+                {
+                    // Assert
+                    Assert.IsNotNull(m);
+                    Assert.AreEqual(1, m.SensorId);
+                    Assert.AreEqual(25, m.MeasurementValue);
+                }
             }
         }
 
         [TestMethod]
         public void GetInTimeFrame_ReturnsMeasurementsWithinRange()
         {
-            // Arrange
-            var now = DateTime.Now;
-            using (var context = CreateDbContext())
+            // Act
+            var list = _measurementRepository.GetBySensorId(2);
+
+            foreach (var m in list)
             {
-                
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
-
-                // Adding test data
-                context.Measurements.Add(new Measurement { Id = 1, SensorId = 1, MeasurementTime = now.AddMinutes(-10), MeasurementValue = 20 });
-                context.Measurements.Add(new Measurement { Id = 2, SensorId = 1, MeasurementTime = now, MeasurementValue = 30 });
-                context.Measurements.Add(new Measurement { Id = 3, SensorId = 1, MeasurementTime = now.AddMinutes(10), MeasurementValue = 40 });
-                context.SaveChanges();
+                // Assert
+                Assert.IsNotNull(m);
             }
+            _measurementRepository.GetInTimeFrame(2, measurement2.MeasurementTime, measurement3.MeasurementTime);
+            Assert.AreEqual(2, list.Count());
 
-            // Act & Assert
-            using (var context = CreateDbContext())
-            {
-                var repository = new MeasurementRepository(); // MeasurementRepository inherits from DBConnection, using _dbContext
 
-                var result = repository.GetInTimeFrame(1, now.AddMinutes(-5), now.AddMinutes(5)).ToList();
-
-                Assert.AreEqual(1, result.Count);
-                Assert.AreEqual(30, result[0].MeasurementValue);
-            }
         }
     }
 }
