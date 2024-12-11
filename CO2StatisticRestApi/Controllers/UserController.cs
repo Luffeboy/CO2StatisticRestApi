@@ -19,7 +19,9 @@ namespace CO2StatisticRestApi.Controllers
             _userRepository = userRepo;
             _sensorUserRepository = sensorUserRepo;
         }
-        
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
         public ActionResult<User> GetUser(int id)
         {
@@ -33,7 +35,8 @@ namespace CO2StatisticRestApi.Controllers
             return user;
         }
 
-       
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         public ActionResult<User> PostUser(LoginInfo user)
         {
@@ -42,6 +45,9 @@ namespace CO2StatisticRestApi.Controllers
                 return BadRequest("You are unable to create a new account, with that email or password");
             return Created("/" + createdUser.Id, createdUser);
         }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete]
         public ActionResult<string> DeleteUser(LoginInfo user)
         {
@@ -51,7 +57,9 @@ namespace CO2StatisticRestApi.Controllers
             
             return Ok("Your account has been deleted");
         }
-        //[ProducesResponseType(Response.)]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("login")]
         public ActionResult<int> PostLogin(LoginInfo info)
         {
@@ -61,6 +69,8 @@ namespace CO2StatisticRestApi.Controllers
             return BadRequest("Your username or password was incorrect");
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("sensors/{id}")]
         public ActionResult<IEnumerable<Sensor>> PostGetSensors(int id)
         {
@@ -70,6 +80,8 @@ namespace CO2StatisticRestApi.Controllers
             return Ok(_sensorUserRepository.GetByUserId(id));
         }
         // subscribe to sensor
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("{id}")]
         public ActionResult<SensorUser> PostSubscribe(int id, [FromBody] LoginInfo info)
         {
@@ -82,6 +94,8 @@ namespace CO2StatisticRestApi.Controllers
             return Ok(sensorUser);
         }
         // subscribe to sensor
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("changePassword")]
         public ActionResult<bool> PostChangePassword([FromBody] ChangePasswordInfo info)
         {

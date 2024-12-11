@@ -10,6 +10,7 @@ namespace CO2StatisticRestApi.Controllers
     public class CO2Controller : ControllerBase
     {
         //laver en get metode, som tager en id som parameter, og to nullable DateTime parametre, startTime og endTime.
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<Measurement>> Get(int id, [FromQuery] DateTime? startTime = null, [FromQuery] DateTime? endTime = null)
         {
@@ -37,6 +38,8 @@ namespace CO2StatisticRestApi.Controllers
         //}
 
         // Change warning value
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("ChangeWarning")] // could be a put method
         public ActionResult<string> PostChangeWarning([FromBody] ChangeWarningData data)
         {
