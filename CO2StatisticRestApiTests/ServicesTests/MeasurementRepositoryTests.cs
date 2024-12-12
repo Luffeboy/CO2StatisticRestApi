@@ -42,16 +42,12 @@ namespace CO2StatisticRestApiTests.ServicesTests
             _measurementRepository._dbContext.Measurements.Add(measurement1);
             _measurementRepository._dbContext.Measurements.Add(measurement2);
             _measurementRepository._dbContext.Measurements.Add(measurement3);
+            _measurementRepository._dbContext.SaveChanges();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            // clean database table: remove all measurements
-            _measurementRepository._dbContext.Measurements.Remove( measurement1 );
-            _measurementRepository._dbContext.Measurements.Remove( measurement2 );
-            _measurementRepository._dbContext.Measurements.Remove( measurement3 );
-
             // Rollback transaction
             _transactionScope.Dispose();
         }
@@ -61,8 +57,12 @@ namespace CO2StatisticRestApiTests.ServicesTests
         public void GetBySensorId_ReturnsCorrectMeasurement()
         {
             // Act
-            foreach (var m in _measurementRepository.GetBySensorId(1))
+            var list = _measurementRepository.GetBySensorId(1);
+            Assert.AreEqual(1, list.Count());
+            foreach (var m in list)
             {
+                Assert.IsNotNull(m.SensorId);
+                Assert.AreEqual(1, m.SensorId);
                 if (m.Id == 1)
                 {
                     // Assert
@@ -79,14 +79,23 @@ namespace CO2StatisticRestApiTests.ServicesTests
         {
             // Act
             var list = _measurementRepository.GetBySensorId(2);
-
+            Assert.AreEqual(2, list.Count());
+            // Assert
             foreach (var m in list)
             {
-                // Assert
-                Assert.IsNotNull(m);
+                if (m.Id == 2)
+                {
+                    Assert.IsNotNull(m);
+                    Assert.AreEqual(25, m.MeasurementValue);
+                }
+                if (m.Id == 3)
+                {
+                    Assert.IsNotNull(m);
+                    Assert.AreEqual(30, m.MeasurementValue);
+                }
             }
-            _measurementRepository.GetInTimeFrame(2, measurement2.MeasurementTime, measurement3.MeasurementTime);
-            Assert.AreEqual(2, list.Count());
+            var l = _measurementRepository.GetInTimeFrame(2, measurement2.MeasurementTime, measurement3.MeasurementTime);
+            Assert.AreEqual(2, l.Count());
 
 
         }
