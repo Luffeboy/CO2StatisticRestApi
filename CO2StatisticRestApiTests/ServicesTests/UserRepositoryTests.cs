@@ -80,19 +80,6 @@ namespace CO2StatisticRestApi.Tests
             Assert.IsNotNull(_userRepository.DeleteUser(email, password));
         }
 
-        //public User? DeleteUser(string email, string password)
-        //{
-        //    User user = Login(email, password);
-        //    if (user == null)
-        //    {
-        //        return null;
-        //    }
-
-        //    base._dbContext.Users.Remove(user);
-        //    base._dbContext.SaveChanges();
-        //    return user;
-        //}
-
         [TestMethod]
         public void DeleteUserTest()
         {
@@ -109,7 +96,6 @@ namespace CO2StatisticRestApi.Tests
             Assert.IsNotNull(deletedUser);
             Assert.IsNull(user);
         }
-
 
         [TestMethod]
         public void ChangeEmailTest()
