@@ -18,25 +18,6 @@ namespace CO2StatisticRestApi.Controllers
             return Ok(measurementRepository.GetInTimeFrame(id, startTime, endTime).OrderBy(m => m.MeasurementTime).ToList());
         }
 
-        // POST api/<CO2Controller>
-        //Laver en post metode, som tager en Measurement som parameter.
-        //[HttpPost]
-        //public ActionResult Post([FromBody] Measurement measurement)
-        //{
-        //    // Hvis der ikke er nogen måling, returneres en BadRequest
-        //    if (measurement == null)
-        //    {
-        //        return BadRequest("Need Measurement.");
-        //    }
-        //    MeasurementRepository measurementRepository = new MeasurementRepository();
-        //    // Filtrér målinger baseret på SensorId
-        //    var measure = new Measurement() { MeasurementTime = measurement.MeasurementTime, MeasurementValue = measurement.MeasurementValue, SensorId = measurement.SensorId };
-        //    measurementRepository._dbContext.Measurements.Add(measure);
-
-        //    // Returnerer en CreatedAtAction, som returnerer en 201 Created statuskode og en location header.
-        //    return Created("/" + measure.Id, measure);
-        //}
-
         // Change warning value
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
